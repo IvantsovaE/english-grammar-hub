@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
@@ -10,7 +10,7 @@ import './App.css'
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
@@ -19,7 +19,7 @@ export default function App() {
             <Route path="progress" element={<ProgressPage />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </ThemeProvider>
   );
 }

@@ -21,6 +21,22 @@ const allMovies = [
   { title: 'Dead Poets Society', year: 1989, genre: 'Drama', level: 'B2' },
   { title: 'Toy Story', year: 1995, genre: 'Animation / Comedy', level: 'A2' },
   { title: 'Paddington', year: 2014, genre: 'Comedy / Family', level: 'A2' },
+  { title: 'The Queen', year: 2006, genre: 'Drama / Biography', level: 'B2' },
+  { title: 'School of Rock', year: 2003, genre: 'Comedy / Music', level: 'A2' },
+  { title: 'A Beautiful Mind', year: 2001, genre: 'Drama / Biography', level: 'B2' },
+  { title: 'The Holiday', year: 2006, genre: 'Romance / Comedy', level: 'B1' },
+  { title: 'Zootopia', year: 2016, genre: 'Animation / Adventure', level: 'A2' },
+  { title: 'The Grand Budapest Hotel', year: 2014, genre: 'Comedy / Adventure', level: 'B2' },
+  { title: 'Inside Out', year: 2015, genre: 'Animation / Comedy', level: 'A2' },
+  { title: 'About Time', year: 2013, genre: 'Romance / Drama', level: 'B1' },
+  { title: 'The Imitation Game', year: 2014, genre: 'Drama / Thriller', level: 'B2' },
+  { title: 'Coco', year: 2017, genre: 'Animation / Musical', level: 'A2' },
+  { title: 'Pride & Prejudice', year: 2005, genre: 'Romance / Drama', level: 'B2' },
+  { title: 'Moana', year: 2016, genre: 'Animation / Adventure', level: 'A2' },
+  { title: 'The Fault in Our Stars', year: 2014, genre: 'Romance / Drama', level: 'B1' },
+  { title: 'Shrek', year: 2001, genre: 'Animation / Comedy', level: 'A2' },
+  { title: 'The Breakfast Club', year: 1985, genre: 'Drama / Comedy', level: 'B2' },
+  { title: 'Kung Fu Panda', year: 2008, genre: 'Animation / Comedy', level: 'A2' },
 ];
 
 function getRandomItems<T>(arr: T[], count: number): T[] {
@@ -89,7 +105,11 @@ export default function HomePage() {
                 <span className={`level-badge level-${a.level.toLowerCase()}`}>{a.level}</span>
                 <h3>{a.title}</h3>
                 <p>{a.desc}</p>
-                {a.url && <span className="read-more">Читать →</span>}
+                {a.content && <p className="article-content">{a.content}</p>}
+                <div className="article-footer">
+                  {a.source && <span className="article-source">📰 {a.source}</span>}
+                  {a.url && <span className="read-more">Читать →</span>}
+                </div>
               </a>
             ))}
           </div>

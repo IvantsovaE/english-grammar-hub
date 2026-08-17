@@ -1109,3 +1109,31 @@ a {
     text-align: center;
   }
 }
+
+.article-content {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.article-source {
+  font-size: 0.8rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.read-more {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 600;
+}

@@ -35,7 +35,7 @@ always, usually, often, sometimes, rarely, never, every day, on Mondays
     `,
     exercises: [
       { id: 'ps-1', type: 'multiple-choice', question: 'She ___ to work by bus every day.', options: ['go', 'goes', 'going', 'gone'], correctAnswer: 'goes', explanation: 'With he/she/it in Present Simple we add -es to go → goes.' },
-      { id: 'ps-2', type: 'fill-in-blanks', question: 'They ___ (not/live) in London.', correctAnswer: "don't live", acceptableAnswers: ["do not live"], explanation: 'Negative in Present Simple: do not + V1. Both "don\'t live" and "do not live" are correct.' },
+      { id: 'ps-2', type: 'fill-in-blanks', question: 'They ___ (not/live) in London.', correctAnswer: "don't live", acceptableAnswers: ["do not live"], explanation: `Negative in Present Simple: do not + V1. Both "don't live" and "do not live" are correct.` },
       { id: 'ps-3', type: 'true-false', question: 'In Present Simple, we use "do" with He/She/It.', correctAnswer: false, explanation: 'With He/She/It we use "does", not "do".' },
       { id: 'ps-4', type: 'multiple-choice', question: 'My father ___ newspapers every morning.', options: ['read', 'reads', 'is reading', 'has read'], correctAnswer: 'reads', explanation: 'With he/she/it in Present Simple we add -s to the verb.' },
       { id: 'ps-5', type: 'fill-in-blanks', question: 'Water ___ (boil) at 100 degrees Celsius.', correctAnswer: 'boils', explanation: 'General facts and scientific truths use Present Simple.' },
@@ -398,7 +398,7 @@ Past Perfect (earlier) → Past Simple (later)
       { id: 'art-12', type: 'multiple-choice', question: '___ Mount Everest is ___ highest mountain.', options: ['A / the', 'The / the', '- / the', 'An / the'], correctAnswer: '- / the', explanation: 'No article with most mountain names, but superlatives use "the".' },
       { id: 'art-13', type: 'true-false', question: 'We say "the English" to mean English people in general.', correctAnswer: true, explanation: 'Yes! The + nationality adjective = the people: the English, the French, the Japanese.' },
       { id: 'art-14', type: 'fill-in-blanks', question: 'I play ___ tennis and ___ piano.', correctAnswer: '-, the', acceptableAnswers: ["no article the", "- the"], explanation: 'No article with sports, but "the" with musical instruments: play the piano.' },
-            { id: 'art-15', type: 'multiple-choice', question: 'Can you pass me ___ salt, please?', options: ['a', 'an', 'the', '-'], correctAnswer: 'the', explanation: 'Specific object (the salt on the table) → "the".' },
+      { id: 'art-15', type: 'multiple-choice', question: 'Can you pass me ___ salt, please?', options: ['a', 'an', 'the', '-'], correctAnswer: 'the', explanation: 'Specific object (the salt on the table) → "the".' },
       { id: 'art-16', type: 'fill-in-blanks', question: '___ life is beautiful.', correctAnswer: '-', acceptableAnswers: ["no article"], explanation: 'Abstract noun (life) with general meaning → no article.' },
       { id: 'art-17', type: 'true-false', question: 'We use "a" before words starting with a silent "h".', correctAnswer: false, explanation: 'Silent h = vowel sound → "an": an hour, an honest person.' },
       { id: 'art-18', type: 'multiple-choice', question: 'I bought ___ new car. ___ car is red.', options: ['a / A', 'a / The', 'the / A', 'an / The'], correctAnswer: 'a / The', explanation: 'First mention = a, second mention (specific) = the.' },

@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { topics } from '../data/topics';
 import type { Exercise } from '../types';
 import { useProgress } from '../hooks/useProgress';
 
 function MultipleChoice({ exercise, onAnswer, isDone }: { exercise: Exercise; onAnswer: (isCorrect: boolean) => void; isDone: boolean }) {
   const [selected, setSelected] = useState<string | null>(null);
-  const [checked, setChecked] = useState(isDone);
+  const [checked, setChecked] = useState(false);
 
   const handleCheck = () => {
     if (!selected) return;
@@ -14,6 +16,25 @@ function MultipleChoice({ exercise, onAnswer, isDone }: { exercise: Exercise; on
     setChecked(true);
     onAnswer(isCorrect);
   };
+
+  if (isDone) {
+    return (
+      <div className="exercise-box">
+        <p className="question">{exercise.question}</p>
+        <div className="options">
+          {exercise.options?.map((opt) => (
+            <button key={opt} className={`option-btn ${opt === exercise.correctAnswer ? 'correct' : ''}`} disabled>
+              {opt}
+            </button>
+          ))}
+        </div>
+        <div className="result">
+          <p>✅ Уже выполнено</p>
+          <p className="explanation">{exercise.explanation}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="exercise-box">
@@ -54,14 +75,37 @@ function MultipleChoice({ exercise, onAnswer, isDone }: { exercise: Exercise; on
 
 function FillInBlanks({ exercise, onAnswer, isDone }: { exercise: Exercise; onAnswer: (isCorrect: boolean) => void; isDone: boolean }) {
   const [answer, setAnswer] = useState('');
-  const [checked, setChecked] = useState(isDone);
+  const [checked, setChecked] = useState(false);
+
+  const checkAnswer = (input: string): boolean => {
+    const normalized = input.trim().toLowerCase();
+    const correct = String(exercise.correctAnswer).trim().toLowerCase();
+    const alternatives = (exercise.acceptableAnswers || []).map((a) => a.trim().toLowerCase());
+    const allCorrect = [correct, ...alternatives];
+    return allCorrect.includes(normalized);
+  };
 
   const handleCheck = () => {
     if (!answer.trim()) return;
-    const isCorrect = answer.trim().toLowerCase() === String(exercise.correctAnswer).toLowerCase();
+    const isCorrect = checkAnswer(answer);
     setChecked(true);
     onAnswer(isCorrect);
   };
+
+  if (isDone) {
+    const correct = String(exercise.correctAnswer);
+    const alternatives = exercise.acceptableAnswers ? ` (${exercise.acceptableAnswers.join(' / ')})` : '';
+    return (
+      <div className="exercise-box">
+        <p className="question">{exercise.question}</p>
+        <input type="text" className="answer-input" value={`${correct}${alternatives}`} disabled />
+        <div className="result">
+          <p>✅ Уже выполнено</p>
+          <p className="explanation">{exercise.explanation}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="exercise-box">
@@ -80,7 +124,7 @@ function FillInBlanks({ exercise, onAnswer, isDone }: { exercise: Exercise; onAn
         </button>
       ) : (
         <div className="result">
-          <p>{answer.trim().toLowerCase() === String(exercise.correctAnswer).toLowerCase() ? '✅ Правильно!' : '❌ Неправильно'}</p>
+          <p>{checkAnswer(answer) ? '✅ Правильно!' : '❌ Неправильно'}</p>
           <p className="explanation">{exercise.explanation}</p>
         </div>
       )}
@@ -90,7 +134,7 @@ function FillInBlanks({ exercise, onAnswer, isDone }: { exercise: Exercise; onAn
 
 function TrueFalse({ exercise, onAnswer, isDone }: { exercise: Exercise; onAnswer: (isCorrect: boolean) => void; isDone: boolean }) {
   const [selected, setSelected] = useState<boolean | null>(null);
-  const [checked, setChecked] = useState(isDone);
+  const [checked, setChecked] = useState(false);
 
   const handleCheck = () => {
     if (selected === null) return;
@@ -98,6 +142,22 @@ function TrueFalse({ exercise, onAnswer, isDone }: { exercise: Exercise; onAnswe
     setChecked(true);
     onAnswer(isCorrect);
   };
+
+  if (isDone) {
+    return (
+      <div className="exercise-box">
+        <p className="question">{exercise.question}</p>
+        <div className="options">
+          <button className={`option-btn ${exercise.correctAnswer === true ? 'correct' : ''}`} disabled>True</button>
+          <button className={`option-btn ${exercise.correctAnswer === false ? 'correct' : ''}`} disabled>False</button>
+        </div>
+        <div className="result">
+          <p>✅ Уже выполнено</p>
+          <p className="explanation">{exercise.explanation}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="exercise-box">
@@ -139,9 +199,7 @@ function TrueFalse({ exercise, onAnswer, isDone }: { exercise: Exercise; onAnswe
 export default function TopicPage() {
   const { id } = useParams<{ id: string }>();
   const topic = topics.find((t) => t.id === id);
-
   const { markExerciseComplete, isExerciseDone, getTopicProgress } = useProgress();
-
   const [activeTab, setActiveTab] = useState<'theory' | 'exercises'>('theory');
 
   if (!topic) {
@@ -170,23 +228,19 @@ export default function TopicPage() {
       </div>
 
       <div className="tabs">
-        <button
-          className={activeTab === 'theory' ? 'active' : ''}
-          onClick={() => setActiveTab('theory')}
-        >
+        <button className={activeTab === 'theory' ? 'active' : ''} onClick={() => setActiveTab('theory')}>
           📖 Теория
         </button>
-        <button
-          className={activeTab === 'exercises' ? 'active' : ''}
-          onClick={() => setActiveTab('exercises')}
-        >
+        <button className={activeTab === 'exercises' ? 'active' : ''} onClick={() => setActiveTab('exercises')}>
           ✏️ Упражнения ({tp.completed}/{topic.exercises.length})
         </button>
       </div>
 
       {activeTab === 'theory' && (
         <div className="theory-content">
-          <div className="theory-text" dangerouslySetInnerHTML={{ __html: topic.theory.replace(/\n/g, '<br/>') }} />
+          <div className="theory-markdown">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{topic.theory}</ReactMarkdown>
+          </div>
         </div>
       )}
 
@@ -201,33 +255,17 @@ export default function TopicPage() {
             <div key={ex.id} className="exercise-item">
               <h4>
                 Упражнение {idx + 1} —{' '}
-                {ex.type === 'multiple-choice'
-                  ? 'Выбор ответа'
-                  : ex.type === 'fill-in-blanks'
-                  ? 'Вставьте пропуск'
-                  : 'Верно / Неверно'}
+                {ex.type === 'multiple-choice' ? 'Выбор ответа' : ex.type === 'fill-in-blanks' ? 'Вставьте пропуск' : 'Верно / Неверно'}
                 {isExerciseDone(ex.id) && ' ✅'}
               </h4>
               {ex.type === 'multiple-choice' && (
-                <MultipleChoice
-                  exercise={ex}
-                  onAnswer={(isCorrect) => handleExerciseComplete(ex.id, isCorrect)}
-                  isDone={isExerciseDone(ex.id)}
-                />
+                <MultipleChoice exercise={ex} onAnswer={(isCorrect) => handleExerciseComplete(ex.id, isCorrect)} isDone={isExerciseDone(ex.id)} />
               )}
               {ex.type === 'fill-in-blanks' && (
-                <FillInBlanks
-                  exercise={ex}
-                  onAnswer={(isCorrect) => handleExerciseComplete(ex.id, isCorrect)}
-                  isDone={isExerciseDone(ex.id)}
-                />
+                <FillInBlanks exercise={ex} onAnswer={(isCorrect) => handleExerciseComplete(ex.id, isCorrect)} isDone={isExerciseDone(ex.id)} />
               )}
               {ex.type === 'true-false' && (
-                <TrueFalse
-                  exercise={ex}
-                  onAnswer={(isCorrect) => handleExerciseComplete(ex.id, isCorrect)}
-                  isDone={isExerciseDone(ex.id)}
-                />
+                <TrueFalse exercise={ex} onAnswer={(isCorrect) => handleExerciseComplete(ex.id, isCorrect)} isDone={isExerciseDone(ex.id)} />
               )}
             </div>
           ))}

@@ -1,8 +1,10 @@
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, Link } from 'react-router-dom';
 import { useTheme } from '../context/useTheme';
+import { useAuth } from '../context/AuthContext';
 
 export default function Layout() {
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
 
   return (
     <div className="app-layout">
@@ -17,12 +19,35 @@ export default function Layout() {
           <NavLink to="/catalog" className={({ isActive }) => (isActive ? 'active' : '')}>
             Каталог
           </NavLink>
-          <NavLink to="/progress" className={({ isActive }) => (isActive ? 'active' : '')}>
-            Мой прогресс
+          <NavLink to="/listening" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Listening
           </NavLink>
+          <NavLink to="/reading" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Reading
+          </NavLink>
+          <NavLink to="/writing" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Writing
+          </NavLink>
+          {user && (
+            <NavLink to="/progress" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Мой прогресс
+            </NavLink>
+          )}
           <button className="theme-toggle" onClick={toggleTheme} title="Сменить тему">
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
+          {user ? (
+            <div className="user-menu">
+              <span>{user.name}</span>
+              <button className="btn-logout" onClick={logout}>
+                Выйти
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="btn-login">
+              Войти
+            </Link>
+          )}
         </nav>
       </header>
 

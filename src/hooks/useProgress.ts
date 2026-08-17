@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 export interface ProgressData {
   completedExercises: string[];
@@ -8,11 +9,13 @@ export interface ProgressData {
   lastVisited: string;
 }
 
-const STORAGE_KEY = 'grammar-hub-progress';
+function getStorageKey(email: string | null): string {
+  return email ? `grammar-hub-progress-${email}` : 'grammar-hub-progress-guest';
+}
 
-function getInitialData(): ProgressData {
+function loadData(email: string | null): ProgressData {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(getStorageKey(email));
     if (raw) return JSON.parse(raw);
   } catch {
     // ignore
@@ -26,41 +29,51 @@ function getInitialData(): ProgressData {
   };
 }
 
+function saveData(email: string | null, data: ProgressData) {
+  localStorage.setItem(getStorageKey(email), JSON.stringify(data));
+}
+
 export function useProgress() {
-  const [progress, setProgress] = useState<ProgressData>(getInitialData);
+  const { user } = useAuth();
+  const email = user?.email ?? null;
+
+  const [progress, setProgress] = useState<ProgressData>(() => loadData(email));
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  }, [progress]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProgress(loadData(email));
+  }, [email]);
 
   const markExerciseComplete = useCallback(
     (exerciseId: string, topicId: string, topicTotal: number, isCorrect: boolean) => {
       setProgress((prev) => {
         const alreadyDone = prev.completedExercises.includes(exerciseId);
-        const newCompleted = alreadyDone
-          ? prev.completedExercises
-          : [...prev.completedExercises, exerciseId];
+        if (alreadyDone) return prev;
 
+        const newCompleted = [...prev.completedExercises, exerciseId];
         const topicPrev = prev.topicProgress[topicId] || { completed: 0, total: topicTotal };
         const newTopicProgress = {
           ...prev.topicProgress,
           [topicId]: {
             total: topicTotal,
-            completed: alreadyDone ? topicPrev.completed : topicPrev.completed + 1,
+            completed: topicPrev.completed + 1,
           },
         };
 
-        return {
+        const newData = {
           ...prev,
           completedExercises: newCompleted,
           topicProgress: newTopicProgress,
-          totalCorrect: prev.totalCorrect + (isCorrect && !alreadyDone ? 1 : 0),
-          totalAnswered: prev.totalAnswered + (alreadyDone ? 0 : 1),
+          totalCorrect: prev.totalCorrect + (isCorrect ? 1 : 0),
+          totalAnswered: prev.totalAnswered + 1,
           lastVisited: new Date().toISOString(),
         };
+
+        saveData(email, newData);
+        return newData;
       });
     },
-    []
+    [email]
   );
 
   const resetProgress = useCallback(() => {
@@ -72,8 +85,8 @@ export function useProgress() {
       lastVisited: new Date().toISOString(),
     };
     setProgress(empty);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(empty));
-  }, []);
+    saveData(email, empty);
+  }, [email]);
 
   const getTopicProgress = useCallback(
     (topicId: string) => {

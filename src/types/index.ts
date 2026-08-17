@@ -8,6 +8,7 @@ export interface Exercise {
   question: string;
   options?: string[];
   correctAnswer: string | boolean;
+  acceptableAnswers?: string[]; 
   explanation: string;
 }
 

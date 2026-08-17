@@ -47,7 +47,8 @@ always, usually, often, sometimes, rarely, never, every day, on Mondays
         type: 'fill-in-blanks',
         question: 'They ___ (not/live) in London.',
         correctAnswer: "don't live",
-        explanation: 'Negative in Present Simple: do not + V1.',
+        acceptableAnswers: ["do not live"],
+        explanation: 'Negative in Present Simple: do not + V1. Both "don\'t live" and "do not live" are correct.',
       },
       {
         id: 'ps-3',
@@ -105,6 +106,7 @@ yesterday, last week/month/year, ago, in 2010, just now
         type: 'fill-in-blanks',
         question: 'They ___ (not/visit) the museum last week.',
         correctAnswer: "didn't visit",
+        acceptableAnswers: ["did not visit"],
         explanation: 'Negative in Past Simple: did not + V1.',
       },
       {
@@ -214,6 +216,7 @@ now, at the moment, right now, currently, today, these days
         type: 'fill-in-blanks',
         question: 'She ___ (not/work) today.',
         correctAnswer: "isn't working",
+        acceptableAnswers: ["is not working"],
         explanation: 'Negative: am/is/are + not + V-ing.',
       },
       {

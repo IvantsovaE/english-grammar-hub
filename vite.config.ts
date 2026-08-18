@@ -1,10 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev
 export default defineConfig({
   plugins: [react()],
-  base: '/english-grammar-hub/', 
-  build: {
-    outDir: '.',
-  }
+  base: '/english-grammar-hub/',
 })

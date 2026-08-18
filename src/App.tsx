@@ -15,7 +15,7 @@ import './App.css'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  return user ? children : <Navigate to="/login" />;
+  return user ? children : <Navigate to="/login" replace/>;
 }
 
 export default function App() {
